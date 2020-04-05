@@ -21,7 +21,8 @@ struct
           Lwt_stream.map String.uppercase_ascii (Body.to_stream body)
         in
         let body' = Body.of_stream ?length stream in
-        {res with Rock.Response.body= body'}
+        let headers = Httpaf.Headers.add_unless_exists res.Rock.Response.headers "connection" "close" in
+        {res with Rock.Response.body= body'; headers}
       in
       Rock.Middleware.create ~name:"uppercase" ~filter
 
