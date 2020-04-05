@@ -3,9 +3,10 @@ open Mirage
 let packages =
   let tuyau = "git+https://github.com/dinosaure/tuyau.git" in
   let paf = "git+https://github.com/dinosaure/paf-le-chien.git" in
+  let opium = "git+https://github.com/anuragsoni/opium#httpaf-update" in
 
   [ package "httpaf"
-  ; package "opium_kernel"
+  ; package ~pin:opium "opium_kernel"
 
   ; package ~pin:tuyau "tuyau"
   ; package ~pin:tuyau "tuyau-tls"

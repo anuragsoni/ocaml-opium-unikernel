@@ -21,7 +21,7 @@ struct
 
   let start c _time stack =
     let port = Key_gen.port () in
-    log c "Starting server at port %d" port
+    log c "Hello from opium running on mirage os!! Server running at port %d" port
     >>= fun () ->
     let config =
       { Tuyau_mirage_tcp.port
