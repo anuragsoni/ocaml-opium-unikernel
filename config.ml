@@ -1,6 +1,16 @@
 open Mirage
 
-let packages = [ package "opium_kernel" ]
+let packages =
+  let tuyau = "git+https://github.com/dinosaure/tuyau.git" in
+  let paf = "git+https://github.com/dinosaure/paf-le-chien.git" in
+
+  [ package "httpaf"
+  ; package "opium_kernel"
+
+  ; package ~pin:tuyau "tuyau"
+  ; package ~pin:tuyau "tuyau-tls"
+  ; package ~pin:tuyau ~sublibs:["tcp"] "tuyau-mirage"
+  ; package ~pin:paf "paf" ]
 
 let port =
   let doc = Key.Arg.info ~doc:"port to use for HTTP service" ["p"; "port"] in
@@ -9,7 +19,7 @@ let port =
 let server =
   foreign "Unikernel.Server"
   ~keys:[Key.abstract port]
-  (console @-> stackv4 @-> resolver @-> conduit @-> job)
+  (console @-> time @-> stackv4 @-> resolver @-> conduit @-> job)
 
 let stack = generic_stackv4 default_network
 let conduit = conduit_direct stack
@@ -17,4 +27,4 @@ let resolver = resolver_dns stack
 
 let () =
   register "server"
-  ~packages [ server $ default_console $ stack $ resolver $ conduit ]
+  ~packages [ server $ default_console $ default_time $ stack $ resolver $ conduit ]
