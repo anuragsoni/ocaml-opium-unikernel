@@ -19,12 +19,10 @@ let port =
 let server =
   foreign "Unikernel.Server"
   ~keys:[Key.abstract port]
-  (console @-> time @-> stackv4 @-> resolver @-> conduit @-> job)
+  (console @-> time @-> stackv4 @-> job)
 
 let stack = generic_stackv4 default_network
-let conduit = conduit_direct stack
-let resolver = resolver_dns stack
 
 let () =
   register "server"
-  ~packages [ server $ default_console $ default_time $ stack $ resolver $ conduit ]
+  ~packages [ server $ default_console $ default_time $ stack ]
