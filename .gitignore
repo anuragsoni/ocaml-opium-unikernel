@@ -1,2 +1,11 @@
 **/_build
 *.merlin
+dune*
+key_gen.ml
+main.ml
+Makefile
+*.opam
+myocamlbuild.ml
+.mirage.config
+*.native
+*.hvt
