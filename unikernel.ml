@@ -12,16 +12,33 @@ struct
   module App = struct
     open Opium_kernel
 
+    let uppercase =
+      let filter service req =
+        service req
+        >|= fun ({ Rock.Response.body; _ } as res) ->
+        let { Body.length; _ } = body in
+        let stream =
+          Lwt_stream.map String.uppercase_ascii (Body.to_stream body)
+        in
+        let body' = Body.of_stream ?length stream in
+        { res with Rock.Response.body = body' }
+      in
+      Rock.Middleware.create ~name:"uppercase" ~filter
+
+
     let service _req =
       Rock.Response.make ~body:(Body.of_string "Hello World") () |> Lwt.return
 
-    let app =
-      Rock.App.create ~middlewares:[] ~handler:service
+
+    let app = Rock.App.create ~middlewares:[ uppercase ] ~handler:service
   end
 
   let start c _time stack =
     let port = Key_gen.port () in
-    log c "Hello from opium running on mirage os!! Server running at port %d" port
+    log
+      c
+      "Hello from opium running on mirage os!! Server running at port %d"
+      port
     >>= fun () ->
     let config =
       { Tuyau_mirage_tcp.port
