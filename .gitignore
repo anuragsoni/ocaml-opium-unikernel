@@ -9,3 +9,5 @@ myocamlbuild.ml
 .mirage.config
 *.native
 *.hvt
+server.virtio
+server_libvirt.xml
