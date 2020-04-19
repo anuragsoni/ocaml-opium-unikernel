@@ -11,21 +11,26 @@ struct
   module App = struct
     open Opium_kernel
 
-    let uppercase =
-      let filter service req =
-        service req
-        >>= fun ({Rock.Response.body; _} as res) ->
-        Body.to_string body
-        >|= fun content ->
-        let body' = Body.of_string (String.uppercase_ascii content) in
-        {res with Rock.Response.body= body'}
-      in
-      Rock.Middleware.create ~name:"uppercase" ~filter
+    let content =
+      {|
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello Unikernel</title>
+    </head>
+    <body>
+        <p>Hello unikernels</p>
+    </body>
+</html>
+    |}
 
     let service _req =
-      Rock.Response.make ~body:(Body.of_string "Hello World") () |> Lwt.return
+      Rock.Response.make
+        ~headers:(Httpaf.Headers.of_list [("content-type", "text/html")])
+        ~body:(Body.of_string content) ()
+      |> Lwt.return
 
-    let app = Rock.App.create ~middlewares:[uppercase] ~handler:service
+    let app = Rock.App.create ~middlewares:[] ~handler:service
   end
 
   let start _time _pclock stack =

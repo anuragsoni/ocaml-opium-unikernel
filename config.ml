@@ -15,7 +15,7 @@ let packages =
 
 let port =
   let doc = Key.Arg.info ~doc:"port to use for HTTP service" ["p"; "port"] in
-  Key.(create "port" Arg.(opt int 8080 doc))
+  Key.(create "port" Arg.(opt int 80 doc))
 
 let server =
   foreign "Unikernel.Server" ~keys:[Key.abstract port]
